@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCC CHECK — Top Corporate | Tickets</title>
+<style>
+:root{--blue:#0878c9;--cyan:#00c8e8;--dark:#071827;--bg:#f4f8fc;--line:#dce7f0;--text:#173047;--muted:#6b7f91;--ok:#16a66a;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef7ff,#f8fcff);color:var(--text);min-height:100vh}
+header{background:linear-gradient(120deg,#061b2c,#0878c9);color:white;padding:18px 28px;box-shadow:0 5px 20px #06223b25}
+.brand{font-weight:900;letter-spacing:.5px;font-size:22px}.brand span{color:#55e5ff}.sub{font-size:12px;opacity:.8;margin-top:3px}
+main{max-width:1100px;margin:0 auto;padding:42px 20px}.screen{display:none}.screen.active{display:block}
+.home{min-height:70vh;display:flex;align-items:center;justify-content:center}.hero{text-align:center;max-width:700px}.hero h1{font-size:42px;margin:0 0 10px;color:var(--dark)}.hero p{color:var(--muted);font-size:16px}
+button{border:0;border-radius:12px;padding:13px 20px;font-weight:800;cursor:pointer;font-size:14px}.primary{background:linear-gradient(100deg,var(--blue),#00a8df);color:white;box-shadow:0 8px 22px #0878c936}.back{background:#e9f1f7;color:#355166}
+.card{background:white;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 10px 35px #0b355012}.card h2{margin-top:0;color:var(--dark)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-weight:800;font-size:13px}input,select,textarea{border:1px solid #cfdde8;border-radius:11px;padding:13px;font:inherit;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0878c915}textarea{min-height:120px;resize:vertical}.actions{display:flex;justify-content:space-between;gap:10px;margin-top:24px}
+.ticket-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.ticket-number{font-size:13px;color:var(--blue);font-weight:900}.pill{background:#e9f8ff;color:#0571a9;border-radius:99px;padding:7px 11px;font-size:12px;font-weight:800}
+.info{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 25px}.info div{background:#f4f8fb;border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13px}.info b{color:var(--dark)}
+.progress-wrap{background:#edf3f7;border-radius:99px;height:13px;overflow:hidden}.progress{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:.25s}.progress-row{display:flex;justify-content:space-between;font-size:12px;font-weight:800;margin:9px 0 20px;color:var(--muted)}
+.steps{display:flex;flex-direction:column;gap:10px}.step{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line);border-radius:13px;padding:15px;background:white;cursor:pointer;transition:.2s}.step:hover{border-color:#7bc7e8}.step.done{background:#effaf5;border-color:#a7dfc5}.check{width:23px;height:23px;border:2px solid #a9bdcb;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}.done .check{background:var(--ok);border-color:var(--ok);color:white}.step small{display:block;color:var(--muted);margin-top:3px}.section-title{margin:28px 0 10px}.finish{width:100%;margin-top:15px;background:var(--ok);color:white}.finish:disabled{opacity:.45;cursor:not-allowed}.note-save{margin-top:10px}.success{text-align:center;padding:40px}.success .icon{font-size:58px}.muted{color:var(--muted)}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.ticket-head{flex-direction:column}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+<header><div class="brand">SCC <span>CHECK</span></div><div class="sub">Top Corporate • Central de Tickets Operacionais</div></header>
+<main>
+<section id="home" class="screen active home">
+ <div class="hero">
+  <div style="font-size:54px">🎫</div>
+  <h1>Abrir Ticket</h1>
+  <p>Abra um ticket, selecione o processo operacional e siga somente o checklist correspondente.</p>
+  <button class="primary" onclick="show('create')">＋ Abrir Ticket</button>
+ </div>
+</section>
+
+<section id="create" class="screen">
+ <div class="card">
+  <h2>Novo Ticket</h2>
+  <p class="muted">Preencha os dados do cliente e escolha o processo que será tratado.</p>
+  <div class="grid">
+   <div class="field"><label>Código do cliente</label><input id="clientCode" placeholder="Ex.: 12345"></div>
+   <div class="field"><label>Razão Social</label><input id="company" placeholder="Nome da empresa"></div>
+   <div class="field full"><label>Processo</label><select id="process"></select></div>
+  </div>
+  <div class="actions"><button class="back" onclick="show('home')">Voltar</button><button class="primary" onclick="createTicket()">Abrir Ticket</button></div>
+ </div>
+</section>
+
+<section id="ticket" class="screen">
+ <div class="card">
+  <div class="ticket-head">
+   <div><div class="ticket-number" id="ticketNumber"></div><h2 id="ticketTitle"></h2></div>
+   <span class="pill" id="ticketStatus">EM ANDAMENTO</span>
+  </div>
+  <div class="info">
+   <div><b>Código:</b> <span id="showCode"></span></div>
+   <div><b>Cliente:</b> <span id="showCompany"></span></div>
+   <div><b>Processo:</b> <span id="showProcess"></span></div>
+  </div>
+  <div class="progress-row"><span>Progresso do checklist</span><span id="progressText">0%</span></div>
+  <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+  <h3 class="section-title">Checklist operacional</h3>
+  <div id="steps" class="steps"></div>
+  <h3 class="section-title">Observações do ticket</h3>
+  <textarea id="notes" placeholder="Registre contatos, retornos, pendências e informações importantes..."></textarea>
+  <button class="primary note-save" onclick="saveNotes()">Salvar observações</button>
+  <button id="finishBtn" class="finish" onclick="finishTicket()" disabled>Concluir Ticket</button>
+ </div>
+</section>
+
+<section id="success" class="screen">
+ <div class="card success">
+  <div class="icon">✅</div><h2>Ticket concluído</h2>
+  <p id="successText"></p>
+  <button class="primary" onclick="resetHome()">Abrir novo ticket</button>
+ </div>
+</section>
+</main>
+
+<script>
+const processes = {
+"baixa-produtividade":{title:"Baixa de Produtividade / Variação de Consumo",steps:[
+"Validar a média histórica de consumo e confirmar se a queda é real.",
+"Verificar se houve pico de uso no mês anterior que distorça a análise.",
+"Priorizar contato telefônico com o cliente; em caso de impossibilidade, utilizar o Bot.",
+"Entender o motivo da oscilação e verificar dúvidas, problemas técnicos ou operacionais.",
+"Validar e atualizar telefone, e-mail e pessoa de contato.",
+"Se houver problema ou dúvida, resolver no momento quando possível ou informar que irá verificar e retornar.",
+"Registrar o contato, retorno e próxima ação no ticket."
+]},
+"proposta-reducao":{title:"Proposta / Redução de Valores",steps:[
+"Confirmar se o cliente recebeu e analisou a proposta.",
+"Confirmar os novos valores e se o cliente está de acordo.",
+"Se não recebeu, confirmar o e-mail e reenviar a proposta.",
+"Explicar o pacote de serviços e que o valor contratado é revertido em consultas.",
+"Registrar a negociação e o retorno no CRM/ticket.",
+"Confirmar o aceite para dar sequência ao aditivo.",
+"Formalizar a alteração por aditivo contratual quando aplicável.",
+"Registrar a conclusão da negociação."
+]},
+"aditivo-contratual":{title:"Aditivo Contratual",steps:[
+"Conferir os valores finais definidos na negociação.",
+"Conferir dados do cliente, CNPJ, endereço e razão social.",
+"Conferir a data de início da vigência.",
+"Aplicar, prioritariamente, 12 meses de fidelidade e calcular a multa proporcional quando aplicável.",
+"Precificar o aditivo quando se tratar de Plano Controle, conferindo valor acordado e saldo.",
+"Registrar no CRM os novos valores e o prazo de fidelidade.",
+"Enviar o aditivo para assinatura via Clicksign.",
+"Acompanhar diariamente a assinatura e enviar lembrete conforme procedimento.",
+"Após assinatura, confirmar a liberação dos produtos e serviços nos logons.",
+"Registrar a conclusão no ticket."
+]},
+"alteracao-titularidade":{title:"Mudança de Titularidade / Dados Contratuais",steps:[
+"Identificar se é troca de CNPJ, alteração contratual da mesma empresa ou troca de representante/sócios.",
+"Verificar se o CNPJ que está saindo possui negativação ativa.",
+"Se houver negativação ativa, acionar a Gerência antes de prosseguir.",
+"Verificar se o cliente utiliza Serasa Winback; se utilizar, obter autorização da Gerência.",
+"Consultar o novo CNPJ na Receita Federal.",
+"Verificar o novo CNPJ no filtro da Serasa.",
+"Solicitar contrato social/alteração contratual, ficha cadastral e documentos do responsável legal.",
+"Salvar os documentos no CRM.",
+"Elaborar o aditivo e enviar para assinatura.",
+"Após assinatura, atualizar o cadastro e as observações internas.",
+"Atualizar/cadastrar a negativação como loja quando aplicável.",
+"Conferir a exportação da loja no dia seguinte quando necessário."
+]},
+"novo-logon":{title:"Novo Logon de Acesso",steps:[
+"Confirmar se o acesso é SCC CHECK, AutoList, Negativação, String ou Winback.",
+"Verificar se já existe logon para o usuário antes de criar outro.",
+"Solicitar e-mail formal do cliente com nome completo e e-mail de acesso.",
+"Confirmar quais produtos/consultas devem ser liberados e manter o padrão do cliente.",
+"Alterar o e-mail principal com a Gerência quando necessário.",
+"Acessar o CRM pelo código do cliente e abrir a aba Logon.",
+"Criar o novo logon e registrar o Código de Liberação.",
+"Orientar o cliente a usar o e-mail 'Liberação de Logon - SCC CHECK'.",
+"Orientar o uso do Código de Liberação e criação da senha.",
+"Confirmar o acesso funcionando e registrar a criação no CRM."
+]},
+"reset-senha":{title:"Reset de Senha / Logon Bloqueado",steps:[
+"Identificar o logon e usuário.",
+"Verificar o motivo do bloqueio no CRM.",
+"Verificar se existe boleto em atraso ou outra causa de bloqueio.",
+"Se necessário, consultar a Gerente da Carteira.",
+"Orientar primeiro a opção 'Esqueci minha senha' quando disponível.",
+"Se necessário, acessar o CRM, aba Logon e executar o reset.",
+"Registrar o novo Código de Liberação.",
+"Orientar o cliente sobre redefinição da senha.",
+"Confirmar o novo acesso funcionando e registrar no CRM."
+]},
+"winback-serasa":{title:"Winback / Serasa",steps:[
+"Identificar se o cliente utiliza acesso Winback.",
+"Confirmar o CNPJ vinculado ao serviço.",
+"Verificar se há necessidade de autorização da Gerência.",
+"Para novo logon/reset, solicitar e-mail formal com nome, e-mail e consultas a liberar.",
+"Orientar o cliente sobre adicionais e campanhas promocionais da Serasa.",
+"Orientar a desmarcação de campanhas quando o cliente não tiver interesse.",
+"Verificar que logons Winback não fiquem mais de 30 dias sem acesso.",
+"Registrar a tratativa no CRM/ticket."
+]},
+"consulta-antiga":{title:"Consulta Antiga / Código 0800",steps:[
+"Identificar se a consulta é SCC CHECK ou AutoList.",
+"Para SCC CHECK, confirmar a data da consulta.",
+"Orientar que consultas antigas de crédito não podem ser recuperadas; no mesmo dia, refazer a consulta quando disponível.",
+"Para AutoList, verificar o Extrato e o prazo de até 90 dias.",
+"Se a consulta AutoList ultrapassar 90 dias, encaminhar à Gerente da Carteira.",
+"Se aparecer o código 0800, informar que ele não representa uma restrição.",
+"Verificar se o caso pode estar relacionado a falecido, menor de 18 anos ou bloqueio do CPF/CNPJ.",
+"Passar informações sensíveis exclusivamente por ligação telefônica.",
+"Registrar a orientação e conclusão no ticket."
+]},
+"cpf-cnpj":{title:"CPF não cadastrado / CNPJ não existente",steps:[
+"Receber a consulta compartilhada pelo cliente.",
+"Conferir o CPF ou CNPJ informado.",
+"Consultar a situação do documento na Receita Federal.",
+"Verificar se há divergência cadastral.",
+"Se necessário, encaminhar o caso à Serasa pelo formulário oficial.",
+"Para o encaminhamento, reunir a consulta completa, nome da mãe, nome do cliente e data de nascimento quando aplicável.",
+"Registrar evidências, orientação e conclusão no ticket."
+]},
+"consulta-personalizada-combo":{title:"Consulta Personalizada / Consulta Combo",steps:[
+"Identificar se é Consulta Personalizada ou Consulta Combo.",
+"Na Consulta Personalizada, orientar que a configuração é responsabilidade do cliente.",
+"Verificar o Extrato para identificar o comportamento das consultas.",
+"Na Consulta Combo, acessar o CRM.",
+"Confirmar autorização prévia do cliente para execução da Combo.",
+"Executar a Consulta Combo conforme o procedimento.",
+"Registrar o procedimento e resultado no ticket."
+]},
+"encerramento":{title:"Encerramento de Contrato",steps:[
+"Confirmar formalmente a solicitação de encerramento.",
+"Verificar pendências contratuais e financeiras.",
+"Registrar o motivo e a tratativa no CRM.",
+"Alinhar e formalizar o encerramento com o cliente.",
+"Enviar a comunicação formal de encerramento.",
+"Confirmar a conclusão do processo.",
+"Registrar o encerramento no ticket."
+]}
+};
+
+let current=null;
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");window.scrollTo(0,0)}
+Object.entries(processes).forEach(([k,p])=>{let o=document.createElement("option");o.value=k;o.textContent=p.title;$("process").appendChild(o)});
+function createTicket(){
+ const code=$("clientCode").value.trim(), company=$("company").value.trim(), key=$("process").value;
+ if(!code||!company){alert("Informe o código do cliente e a Razão Social.");return}
+ const id="TC-"+Date.now().toString().slice(-8);
+ current={id,code,company,key,notes:"",done:Array(processes[key].steps.length).fill(false),created:new Date().toISOString()};
+ localStorage.setItem("topCorporateCurrentTicket",JSON.stringify(current));
+ renderTicket();show("ticket");
+}
+function renderTicket(){
+ const p=processes[current.key];$("ticketNumber").textContent="TICKET "+current.id;$("ticketTitle").textContent=p.title;
+ $("showCode").textContent=current.code;$("showCompany").textContent=current.company;$("showProcess").textContent=p.title;$("notes").value=current.notes||"";
+ $("steps").innerHTML="";
+ p.steps.forEach((s,i)=>{let el=document.createElement("div");el.className="step"+(current.done[i]?" done":"");el.onclick=()=>toggleStep(i);el.innerHTML=`<div class="check">${current.done[i]?"✓":""}</div><div><b>Etapa ${i+1}</b><small>${s}</small></div>`;$("steps").appendChild(el)});
+ updateProgress();
+}
+function toggleStep(i){current.done[i]=!current.done[i];persist();renderTicket()}
+function updateProgress(){let n=current.done.filter(Boolean).length,total=current.done.length,p=Math.round(n/total*100);$("progress").style.width=p+"%";$("progressText").textContent=p+"%";$("finishBtn").disabled=p!==100;$("ticketStatus").textContent=p===100?"PRONTO PARA CONCLUSÃO":"EM ANDAMENTO"}
+function saveNotes(){current.notes=$("notes").value;persist();alert("Observações salvas.")}
+function persist(){localStorage.setItem("topCorporateCurrentTicket",JSON.stringify(current))}
+function finishTicket(){if(current.done.some(x=>!x))return;current.notes=$("notes").value;current.finished=new Date().toISOString();current.status="Concluído";localStorage.setItem("topCorporateTicket_"+current.id,JSON.stringify(current));localStorage.removeItem("topCorporateCurrentTicket");$("successText").textContent=`${current.id} — ${current.company} — ${processes[current.key].title}`;show("success")}
+function resetHome(){$("clientCode").value="";$("company").value="";$("process").selectedIndex=0;show("home")}
+</script>
+</body>
+</html>
