@@ -1,0 +1,11 @@
+SCC CHECK | AUTOLIST — INSTALAÇÃO COMO APLICATIVO (PWA)
+
+1. Extraia todos os arquivos deste pacote.
+2. Publique TODOS os arquivos na mesma pasta raiz do site no Netlify (substituindo o index.html atual pela versão incluída).
+3. Não renomeie nem mova manifest.webmanifest, service-worker.js ou os ícones.
+4. Acesse o endereço publicado usando o Google Chrome atualizado.
+5. Clique em “Instalar aplicativo” quando aparecer, ou use o ícone de instalação na barra de endereço / menu do Chrome.
+
+IMPORTANTE: a instalação exige HTTPS (o Netlify fornece HTTPS). O aplicativo mantém as operações online dependentes de internet e Supabase. O cache oferece apenas uma cópia de contingência da tela inicial; não promete funcionamento offline de login, banco de dados, consultas ou integrações.
+
+A lógica principal do HTML foi mantida; foram adicionados somente metadados PWA, registro do service worker e controle de instalação.
